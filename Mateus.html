@@ -1,17 +1,16 @@
-# <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Prazo do Mateus Renan (Firebase)</title>
 <style>
-:root{--bg:#f6f4ef;--card:#fff;--tx:#1d2a24;--mut:#6b7a72;--ac:#1f8a5b;--ac2:#e8f5ee;--bd:#e2ded4;--red:#c0392b;--red2:#fbeae8;
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1d2a24;--mut:#6b7a72;--ac:#1f8a5b;--ac2:#e8f5ee;--bd:#e2ded4;--red:#c0392b;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--card:#1b2620;--tx:#e8efe9;--mut:#93a39a;--ac:#4cc58b;--ac2:#1e3a2c;--bd:#2c3b33;--red:#ff7b6b;--red2:#3a1f1c}}
-:root[data-theme="dark"]{--bg:#121a16;--card:#1b2620;--tx:#e8efe9;--mut:#93a39a;--ac:#4cc58b;--ac2:#1e3a2c;--bd:#2c3b33;--red:#ff7b6b;--red2:#3a1f1c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--card:#1b2620;--tx:#e8efe9;--mut:#93a39a;--ac:#4cc58b;--ac2:#1e3a2c;--bd:#2c3d33}}
 *{box-sizing:border-box}
 html{color-scheme:light dark}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .w{max-width:480px;margin:0 auto;padding:20px 16px 40px}
 h1{font-size:22px;margin:8px 0 4px}
 .sub{color:var(--mut);margin:0 0 18px;font-size:14px}
@@ -19,145 +18,112 @@ h1{font-size:22px;margin:8px 0 4px}
 label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
 input{width:100%;font-size:16px;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
 button{width:100%;margin-top:16px;padding:14px;font-size:16px;font-weight:600;border:0;border-radius:12px;background:var(--ac);color:#fff;cursor:pointer}
-button.g{background:transparent;color:var(--mut);border:1px solid var(--bd);margin-top:10px;font-weight:500}
-.st{display:inline-block;padding:5px 12px;border-radius:99px;font-size:13px;font-weight:600;background:var(--ac2);color:var(--ac)}
-.st.late{background:var(--red2);color:var(--red)}
-.who{font-size:18px;font-weight:600;margin:12px 0 2px}
-.goal{color:var(--mut);font-size:14px;margin-bottom:14px}
-.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
-.cd div{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:12px 0}
-.cd b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
-.cd span{font-size:11px;color:var(--mut);text-transform:uppercase}
-.bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;margin:16px 0 6px;border:1px solid var(--bd)}
-.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .5s}
-.late .bar i{background:var(--red)}
-.dl{font-size:13px;color:var(--mut)}
-.hide{display:none}
+button.sec{background:var(--ac2);color:var(--ac)}
+#lista p{margin:0 0 10px;padding:10px 12px;background:var(--ac2);border-radius:10px;word-break:break-word}
+#st{font-size:13px;color:var(--mut);margin-top:8px}
+.err{color:var(--red)}
 </style>
 </head>
 <body>
 <div class="w">
-<h1>⏳ Prazo de multiplicação</h1>
-<p class="sub">Escolha o dia e o horário limite.</p>
-<p class="dl" id="sync" style="margin:-8px 0 14px"></p>
+  <h1>Prazo do Mateus Renan</h1>
+  <p class="sub" id="sub">Somente leitura. Entre com a senha para editar.</p>
 
-<div class="card" id="form">
-<label>Quem vai multiplicar</label>
-<input id="nome" value="Mateus Renan">
-<label>Dinheiro entregue (R$)</label>
-<input id="valor" type="number" inputmode="decimal" placeholder="Ex.: 1000">
-<label>Meta (quanto deve voltar, R$) — opcional</label>
-<input id="meta" type="number" inputmode="decimal" placeholder="Ex.: 2000">
-<label>Data e horário limite</label>
-<input id="quando" type="datetime-local">
-<button id="salvar">Definir prazo</button>
-</div>
+  <div class="card">
+    <label>Prazo</label>
+    <div id="prazoTxt" style="font-size:18px;font-weight:600">—</div>
+    <div id="editor" hidden>
+      <label for="prazo">Alterar prazo</label>
+      <input id="prazo" type="text" placeholder="Ex: 30/11/2026">
+      <button id="salvar">Salvar</button>
+    </div>
+  </div>
 
-<div class="card hide" id="painel">
-<span class="st" id="status">Em andamento</span>
-<div class="who" id="pn"></div>
-<div class="goal" id="pg"></div>
-<div class="cd">
-<div><b id="d">0</b><span>dias</span></div>
-<div><b id="h">0</b><span>horas</span></div>
-<div><b id="m">0</b><span>min</span></div>
-<div><b id="s">0</b><span>seg</span></div>
-</div>
-<div class="bar"><i id="pb"></i></div>
-<div class="dl" id="dl"></div>
-<button class="g" id="editar">Alterar prazo</button>
-<button class="g" id="limpar">Apagar</button>
-</div>
+  <div class="card" id="loginCard">
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" placeholder="Senha para editar" autocomplete="current-password">
+    <button id="entrar" class="sec">Entrar</button>
+    <button id="sair" class="sec" hidden>Sair</button>
+    <div id="st"></div>
+  </div>
+
+  <div class="card">
+    <label for="msg">Mensagem</label>
+    <input id="msg" type="text" placeholder="Digite sua mensagem" maxlength="500">
+    <button id="enviar">Enviar</button>
+    <div id="lista" style="margin-top:16px"></div>
+  </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script>
-// === Config do projeto Firebase ===
-var firebaseConfig={
-  apiKey:"AIzaSyCj_G58wV-8RXUdQRsoIrIRcJ-JGODO9sw",
-  authDomain:"objetivo-de-mateus.firebaseapp.com",
-  databaseURL:"https://objetivo-de-mateus-default-rtdb.firebaseio.com",
-  projectId:"objetivo-de-mateus",
-  storageBucket:"objetivo-de-mateus.firebasestorage.app",
-  messagingSenderId:"631231146295",
-  appId:"1:631231146295:web:1f7b343c1546a367dcd2b2",
-  measurementId:"G-9TMCYYZ0Z4"
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, query, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// COLE AQUI o firebaseConfig do seu projeto
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_PROJETO.firebaseapp.com",
+  projectId: "SEU_PROJETO",
+  appId: "SEU_APP_ID"
 };
-// ===================================================
-var KEY="prazo_mateus",data=null,timer=null,ref=null,editing=false;
-function $(i){return document.getElementById(i)}
-try{
-  if(firebaseConfig.apiKey&&typeof firebase!=="undefined"){
-    firebase.initializeApp(firebaseConfig);
-    ref=firebase.database().ref("prazo");
-  }
-}catch(e){ref=null}
-function loadLocal(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
-function save(d){
-  try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
-  if(ref)ref.set(d).catch(function(){$("sync").textContent="⚠️ Erro ao salvar no Firebase (confira as regras)"});
-}
-function clear(){
-  try{localStorage.removeItem(KEY)}catch(e){}
-  if(ref)ref.remove();
-}
-function brl(n){return Number(n).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
-function pad(n){return String(n).padStart(2,"0")}
-function toLocalInput(ts){var d=new Date(ts);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes())}
+// E-mail do usuário criado em Authentication > Users
+const EMAIL_ADMIN = "mateus@seusite.com";
 
-function render(){
-  if(!data){$("form").classList.remove("hide");$("painel").classList.add("hide");clearInterval(timer);return}
-  $("form").classList.add("hide");$("painel").classList.remove("hide");
-  $("pn").textContent=data.nome;
-  var g=[];
-  if(data.valor)g.push("Recebeu "+brl(data.valor));
-  if(data.meta)g.push("Meta: "+brl(data.meta));
-  $("pg").textContent=g.length?g.join(" · "):"Multiplicar o dinheiro entregue";
-  $("dl").textContent="Prazo: "+new Date(data.fim).toLocaleString("pt-BR",{dateStyle:"full",timeStyle:"short"});
-  tick();
-  clearInterval(timer);timer=setInterval(tick,1000);
-}
-function tick(){
-  if(!data)return;
-  var now=Date.now(),left=data.fim-now,late=left<=0;
-  $("painel").classList.toggle("late",late);
-  $("status").classList.toggle("late",late);
-  $("status").textContent=late?"Prazo encerrado":"Em andamento";
-  var t=Math.abs(left)/1000;
-  $("d").textContent=Math.floor(t/86400);
-  $("h").textContent=pad(Math.floor(t%86400/3600));
-  $("m").textContent=pad(Math.floor(t%3600/60));
-  $("s").textContent=pad(Math.floor(t%60));
-  var p=late?100:Math.min(100,Math.max(0,(now-data.inicio)/(data.fim-data.inicio)*100));
-  $("pb").style.width=p+"%";
-}
-$("salvar").onclick=function(){
-  var q=$("quando").value;
-  if(!q){alert("Escolha a data e o horário.");return}
-  var fim=new Date(q).getTime();
-  var d={nome:$("nome").value.trim()||"Mateus Renan",valor:$("valor").value,meta:$("meta").value,fim:fim,inicio:(data&&data.inicio)||Date.now()};
-  if(d.inicio>=fim)d.inicio=fim-86400000;
-  editing=false;data=d;save(d);render();
-};
-$("editar").onclick=function(){
-  editing=true;
-  $("nome").value=data.nome;$("valor").value=data.valor||"";$("meta").value=data.meta||"";
-  $("quando").value=toLocalInput(data.fim);
-  $("form").classList.remove("hide");$("painel").classList.add("hide");
-};
-$("limpar").onclick=function(){if(confirm("Apagar o prazo?")){data=null;clear();$("quando").value="";render()}};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const $ = id => document.getElementById(id);
 
-if(ref){
-  $("sync").textContent="☁️ Sincronizado com o Firebase";
-  ref.on("value",function(snap){
-    if(editing)return;
-    data=snap.val();render();
-  },function(){$("sync").textContent="⚠️ Sem acesso ao Firebase (confira as regras)"});
-}else{
-  $("sync").textContent="📱 Modo local — cole sua config do Firebase no código";
-  data=loadLocal();render();
-}
+// ---- Login ----
+$("entrar").onclick = async () => {
+  $("st").textContent = ""; $("st").className = "";
+  try { await signInWithEmailAndPassword(auth, EMAIL_ADMIN, $("senha").value); $("senha").value = ""; }
+  catch { $("st").textContent = "Senha incorreta."; $("st").className = "err"; }
+};
+$("sair").onclick = () => signOut(auth);
+onAuthStateChanged(auth, u => {
+  const on = !!u;
+  $("editor").hidden = !on;
+  $("sair").hidden = !on;
+  $("entrar").hidden = on;
+  $("senha").hidden = on;
+  document.querySelector('label[for="senha"]').hidden = on;
+  $("sub").textContent = on ? "Modo edição ativo." : "Somente leitura. Entre com a senha para editar.";
+});
+
+// ---- Prazo (só quem tem senha altera) ----
+const prazoRef = doc(db, "config", "prazo");
+onSnapshot(prazoRef, s => {
+  const v = s.exists() ? s.data().valor : "—";
+  $("prazoTxt").textContent = v;
+  if (document.activeElement !== $("prazo")) $("prazo").value = s.exists() ? v : "";
+});
+$("salvar").onclick = async () => {
+  try { await setDoc(prazoRef, { valor: $("prazo").value.trim() }); $("st").textContent = "Salvo."; $("st").className = ""; }
+  catch { $("st").textContent = "Sem permissão."; $("st").className = "err"; }
+};
+
+// ---- Mensagens ----
+const msgs = collection(db, "mensagens");
+$("enviar").onclick = async () => {
+  const el = $("msg");
+  const texto = el.value.trim();
+  if (!texto) return;
+  try { await addDoc(msgs, { texto, criado: serverTimestamp() }); el.value = ""; }
+  catch { alert("Não foi possível enviar."); }
+};
+onSnapshot(query(msgs, orderBy("criado", "desc")), snap => {
+  const lista = $("lista");
+  lista.innerHTML = "";
+  snap.forEach(d => {
+    const p = document.createElement("p");
+    p.textContent = d.data().texto;
+    lista.appendChild(p);
+  });
+});
 </script>
 </body>
 </html>
